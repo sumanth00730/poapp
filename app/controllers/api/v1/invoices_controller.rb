@@ -1,4 +1,4 @@
-class InvoicesController < ApplicationController
+class Api::V1::InvoicesController < ApplicationController
   before_action :set_invoice, only: %i[ show update destroy ]
 
   # GET /invoices
@@ -20,7 +20,7 @@ class InvoicesController < ApplicationController
     if @invoice.save
       @total = @invoice.quantity*@invoice.item_amount
       @invoice.update(total_amount:@total)
-      render json: @invoice, status: :created, location: @invoice
+      render json: @invoice, status: :created
     else
       render json: @invoice.errors, status: :unprocessable_entity
     end
@@ -29,6 +29,8 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1
   def update
     if @invoice.update(invoice_params)
+      @total = @invoice.quantity*@invoice.item_amount
+      @invoice.update(total_amount:@total)
       render json: @invoice
     else
       render json: @invoice.errors, status: :unprocessable_entity
